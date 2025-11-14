@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.patakitambulisho.R
 import com.example.patakitambulisho.app.data.repository.AuthRepository
+import com.example.patakitambulisho.app.ui.forgot.ForgotPasswordFragment
 import com.example.patakitambulisho.app.ui.login.LoginViewModel
 import com.example.patakitambulisho.app.ui.login.LoginViewModelFactory
 import com.google.android.material.button.MaterialButton
@@ -24,6 +26,8 @@ class LoginFragment : Fragment() {
     private lateinit var loginButton: MaterialButton
     private lateinit var progressBar: ProgressBar
 
+    private lateinit var forgetpass: TextView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,7 +39,7 @@ class LoginFragment : Fragment() {
         passwordField = view.findViewById(R.id.passwordEditText)
         loginButton = view.findViewById(R.id.loginButton)
         progressBar = view.findViewById(R.id.progressBarLogin)
-
+        forgetpass = view.findViewById(R.id.forgotPasswordText)
         // Setup ViewModel
         val repository = AuthRepository()
         val factory = LoginViewModelFactory(repository)
@@ -78,6 +82,12 @@ class LoginFragment : Fragment() {
                 // Call ViewModel login
                 viewModel.login(username, password)
             }
+        }
+        forgetpass.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ForgotPasswordFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         return view

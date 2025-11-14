@@ -3,6 +3,7 @@ package com.example.patakitambulisho.app.UIfragments
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.patakitambulisho.R
+import com.example.patakitambulisho.app.ui.forgot.ForgotPasswordFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

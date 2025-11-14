@@ -1,20 +1,29 @@
-
 package com.example.patakitambulisho.app.data.api
 
-import com.example.patakitambulisho.app.data.model.LoginResponse
-import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import com.example.patakitambulisho.app.data.model.*
+import retrofit2.http.*
 
 interface AuthApiService {
 
+    // LOGIN
     @FormUrlEncoded
     @POST("login.php")
-    fun login(
-        @Field("emailcont") emailOrPhone: String,
+    suspend fun login(
+        @Field("emailcont") email: String,
         @Field("password") password: String
-    ): Call<LoginResponse>
+    ): LoginResponse
+
+
+    // FORGOT PASSWORD – sends email & OTP
+    @FormUrlEncoded
+    @POST("forget-password.php")
+    suspend fun forgotPassword(
+        @Field("email") email: String,
+        @Field("mobilenumber") phone: String
+    ): ForgotPasswordResponse
+
+
+    // VERIFY OTP
 
 
 }

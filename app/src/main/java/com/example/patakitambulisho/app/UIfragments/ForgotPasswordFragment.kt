@@ -1,42 +1,96 @@
-package com.example.patakitambulisho.app.UIfragments
+package com.example.patakitambulisho.app.ui.forgot
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.patakitambulisho.R
-import com.google.android.material.textfield.TextInputEditText
+import com.example.patakitambulisho.app.UIfragments.OtpVerificationFragment
+import com.example.patakitambulisho.app.data.repository.AuthRepository
+import com.example.patakitambulisho.app.util.Result
+
 class ForgotPasswordFragment : Fragment() {
 
+    private lateinit var viewModel: ForgotPasswordViewModel
+
+    private lateinit var emailInput: EditText
+    private lateinit var phoneInput: EditText
+    private lateinit var resetButton: Button
+    private lateinit var loginButton: Button
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_forgot_password, container, false)
+        return inflater.inflate(R.layout.fragment_forgot_password, container, false)
+    }
 
-        val resetButton = view.findViewById<Button>(R.id.resetButton)
-        val loginButton = view.findViewById<Button>(R.id.loginButton)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        // Reset Button Click
+        // Initialize UI elements
+        emailInput = view.findViewById(R.id.emailEditText)
+        phoneInput = view.findViewById(R.id.phoneEditText)
+        resetButton = view.findViewById(R.id.resetButton)
+        loginButton = view.findViewById(R.id.loginButton)
+
+        // Setup MVVM
+        val repository = AuthRepository()
+        val factory = ForgotPasswordViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, factory)[ForgotPasswordViewModel::class.java]
+
+        // Handle Reset Button Click
         resetButton.setOnClickListener {
-            val email = view.findViewById<TextInputEditText>(R.id.emailEditText).text.toString()
-            val phone = view.findViewById<TextInputEditText>(R.id.phoneEditText).text.toString()
+            val email = emailInput.text.toString().trim()
+            val phone = phoneInput.text.toString().trim()
 
             if (email.isEmpty() || phone.isEmpty()) {
                 Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
-            } else {
-                // Simulate verification - matches your PHP logic
-                (activity as MainActivity).navigateToChangePassword()
+                return@setOnClickListener
+            }
+
+            viewModel.sendResetEmail(email, phone)
+        }
+
+        // Handle Login Button Click → goes back to Login Fragment
+        loginButton.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
+
+        // Observe ViewModel Response
+        viewModel.forgotPasswordResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    Toast.makeText(requireContext(), "Sending email… Please wait", Toast.LENGTH_SHORT).show()
+                }
+
+                is Result.Success -> {
+                    Toast.makeText(requireContext(), result.data.message, Toast.LENGTH_LONG).show()
+
+                    // --- NAVIGATE TO OTP FRAGMENT HERE ---
+                    val bundle = Bundle()
+                    bundle.putString("email", emailInput.text.toString().trim())
+
+                    val otpFragment = OtpVerificationFragment()
+                    otpFragment.arguments = bundle
+
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, otpFragment)  // YOUR FRAGMENT CONTAINER ID
+                        .addToBackStack(null)
+                        .commit()
+                }
+
+                is Result.Error -> {
+                    Toast.makeText(requireContext(), result.message, Toast.LENGTH_LONG).show()
+                }
             }
         }
 
-        // Login Button Click
-        loginButton.setOnClickListener {
-            (activity as MainActivity).goBackToLogin()
-        }
-
-        return view
     }
 }
