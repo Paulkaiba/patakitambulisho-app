@@ -203,6 +203,17 @@
                             android:clickable="true"
                             android:focusable="true" />
 
+                        <!-- Loading Progress Bar -->
+                        <ProgressBar
+                            android:id="@+id/progressBarLogin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            android:indeterminate="true"
+                            android:layout_marginTop="20dp" />
+
+
                     </LinearLayout>
 
                 </LinearLayout>

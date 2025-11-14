@@ -1,4 +1,4 @@
-package com.example.patakitambulisho.app.UI
+package com.example.patakitambulisho.app.UIfragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputEditText
 import com.example.patakitambulisho.R
-import com.example.patakitambulisho.app.UI.MainActivity  // Add this import
+
 class ChangePasswordFragment : Fragment() {
 
     override fun onCreateView(
