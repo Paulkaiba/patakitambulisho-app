@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object ApiClient {
-    private const val BASE_URL = "http://192.168.0.105/patakitambulisho/API/" // <-- replace with your PC IP
+    private const val BASE_URL = "http://10.50.28.10/patakitambulisho/API/" // your PC IP
 
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

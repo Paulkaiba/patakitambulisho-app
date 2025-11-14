@@ -11,7 +11,8 @@ interface AuthService {
     @FormUrlEncoded
     @POST("login.php")
     suspend fun login(
-        @Field("username") username: String,       // or "email" depending on your API
+        @Field("emailcont") email: String,
         @Field("password") password: String
     ): Response<LoginResponse>
 }
+

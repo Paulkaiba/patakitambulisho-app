@@ -1,6 +1,7 @@
 package com.example.patakitambulisho.app.UIfragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,42 +30,52 @@ class LoginFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
 
-        // ✅ Initialize Views from your XML
+        // Initialize views
         usernameField = view.findViewById(R.id.usernameEditText)
         passwordField = view.findViewById(R.id.passwordEditText)
         loginButton = view.findViewById(R.id.loginButton)
         progressBar = view.findViewById(R.id.progressBarLogin)
 
-        // ✅ Setup ViewModel using your AuthRepository
+        // Setup ViewModel
         val repository = AuthRepository()
         val factory = LoginViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory)[LoginViewModel::class.java]
 
-        // ✅ Observe loading state
+        // Observe loading state
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
             loginButton.isEnabled = !isLoading
         }
 
-        // ✅ Observe login result (JSON feedback)
+        // Observe login result
         viewModel.loginResult.observe(viewLifecycleOwner) { result ->
+            Log.d("LOGIN_RESPONSE", "Response: $result")
             if (result.success) {
                 Toast.makeText(requireContext(), "✅ ${result.message}", Toast.LENGTH_LONG).show()
-                // TODO: Navigate to DashboardFragment
-                // findNavController().navigate(R.id.action_loginFragment_to_dashboardFragment)
+
+                // ✅ Navigate to DashboardFragment
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, DashboardFragment())
+                    .addToBackStack(null)  // allows back navigation
+                    .commit()
+
             } else {
                 Toast.makeText(requireContext(), "❌ ${result.message}", Toast.LENGTH_LONG).show()
             }
         }
 
-        // ✅ Login button click listener
+
+        // Login button click
         loginButton.setOnClickListener {
             val username = usernameField.text.toString().trim()
             val password = passwordField.text.toString().trim()
 
+            Log.d("LOGIN_INPUT", "Trying login with: $username / $password")
+
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(requireContext(), "Please enter both fields", Toast.LENGTH_SHORT).show()
             } else {
+                // Call ViewModel login
                 viewModel.login(username, password)
             }
         }
