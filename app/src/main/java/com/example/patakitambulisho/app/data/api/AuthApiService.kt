@@ -13,7 +13,6 @@ interface AuthApiService {
         @Field("password") password: String
     ): LoginResponse
 
-
     // FORGOT PASSWORD – sends email & OTP
     @FormUrlEncoded
     @POST("forget-password.php")
@@ -22,8 +21,18 @@ interface AuthApiService {
         @Field("mobilenumber") phone: String
     ): ForgotPasswordResponse
 
-
     // VERIFY OTP
+    @FormUrlEncoded
+    @POST("twofactor.php")
+    suspend fun verifyOtp(
+        @Field("email") email: String,
+        @Field("otp") otp: String
+    ): OtpVerifyResponse
 
-
+    // RESEND OTP
+    @FormUrlEncoded
+    @POST("resend-otp.php")
+    suspend fun resendOtp(
+        @Field("email") email: String
+    ): OtpVerifyResponse
 }

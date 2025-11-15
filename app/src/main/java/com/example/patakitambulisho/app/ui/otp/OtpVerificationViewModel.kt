@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.patakitambulisho.app.data.repository.AuthRepository
+import com.example.patakitambulisho.app.data.model.OtpVerifyResponse
 import com.example.patakitambulisho.app.util.Result
 import kotlinx.coroutines.launch
 
@@ -13,30 +14,22 @@ class OtpVerificationViewModel(private val repository: AuthRepository) : ViewMod
     private val _verifyOtpResult = MutableLiveData<Result<OtpVerifyResponse>>()
     val verifyOtpResult: LiveData<Result<OtpVerifyResponse>> = _verifyOtpResult
 
-    private val _resendOtpResult = MutableLiveData<Result<DefaultResponse>>()
-    val resendOtpResult: LiveData<Result<DefaultResponse>> = _resendOtpResult
+    private val _resendOtpResult = MutableLiveData<Result<OtpVerifyResponse>>() // Reuse OtpVerifyResponse
+    val resendOtpResult: LiveData<Result<OtpVerifyResponse>> = _resendOtpResult
 
     fun verifyOtp(email: String, otp: String) {
         _verifyOtpResult.value = Result.Loading
         viewModelScope.launch {
-            try {
-                val response = repository.verifyOtp(email, otp)
-                _verifyOtpResult.value = Result.Success(response)
-            } catch (e: Exception) {
-                _verifyOtpResult.value = Result.Error(e.localizedMessage ?: "Unknown error")
-            }
+            val result = repository.verifyOtp(email, otp)
+            _verifyOtpResult.value = result
         }
     }
 
     fun resendOtp(email: String) {
         _resendOtpResult.value = Result.Loading
         viewModelScope.launch {
-            try {
-                val response = repository.resendOtp(email)
-                _resendOtpResult.value = Result.Success(response)
-            } catch (e: Exception) {
-                _resendOtpResult.value = Result.Error(e.localizedMessage ?: "Unknown error")
-            }
+            val result = repository.resendOtp(email) // This needs to be implemented in AuthRepository
+            _resendOtpResult.value = result
         }
     }
 }

@@ -73,18 +73,26 @@ class ForgotPasswordFragment : Fragment() {
                 is Result.Success -> {
                     Toast.makeText(requireContext(), result.data.message, Toast.LENGTH_LONG).show()
 
-                    // --- NAVIGATE TO OTP FRAGMENT HERE ---
-                    val bundle = Bundle()
-                    bundle.putString("email", emailInput.text.toString().trim())
+                    // Use email from server response (safer than reading UI)
+                    val returnedEmail = result.data.email ?: emailInput.text.toString().trim()
+                    if (returnedEmail.isBlank()) {
+                        // fallback if neither is available
+                        Toast.makeText(requireContext(), "No email available to proceed", Toast.LENGTH_LONG).show()
+                        return@observe
+                    }
 
+                    // Prepare OTP fragment with email argument
+                    val bundle = Bundle().apply { putString("email", returnedEmail) }
                     val otpFragment = OtpVerificationFragment()
                     otpFragment.arguments = bundle
 
+                    // Navigate using FragmentManager (ensure container ID is correct)
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, otpFragment)  // YOUR FRAGMENT CONTAINER ID
+                        .replace(R.id.fragment_container, otpFragment) // <-- confirm this ID
                         .addToBackStack(null)
                         .commit()
                 }
+
 
                 is Result.Error -> {
                     Toast.makeText(requireContext(), result.message, Toast.LENGTH_LONG).show()
