@@ -1,5 +1,7 @@
 package com.example.patakitambulisho.app.data.repository
 
+
+import android.util.Log
 import com.example.patakitambulisho.app.data.api.RetrofitClient
 import com.example.patakitambulisho.app.data.model.*
 import com.example.patakitambulisho.app.util.Result
@@ -62,5 +64,19 @@ class AuthRepository {
             Result.Error(e.localizedMessage ?: "Unknown error occurred")
         }
     }
+
+    suspend fun resetPassword(request: ResetPasswordRequest): ChangePasswordResponse {
+        return try {
+            Log.d("RESET_REQUEST", "Sending JSON: $request")
+            val response = RetrofitClient.apiService.resetPassword(request)
+            Log.d("RESET_RESPONSE", "Received: $response")
+            response
+        } catch (e: Exception) {
+            Log.e("RESET_ERROR", "Exception:", e)
+            ChangePasswordResponse(false, "Network error: ${e.localizedMessage}")
+        }
+    }
+
+
 
 }

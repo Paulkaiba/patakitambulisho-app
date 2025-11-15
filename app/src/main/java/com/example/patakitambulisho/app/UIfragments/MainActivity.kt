@@ -34,10 +34,16 @@ class MainActivity : AppCompatActivity() {
             .addToBackStack(null)
             .commit()
     }
-
     fun goBackToLogin() {
-        supportFragmentManager.popBackStack()
+        // Clear the entire back stack
+        supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+        // Replace with LoginFragment
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, LoginFragment())
+            .commit()
     }
+
 
     // ✅ (Optional) Navigate to DashboardFragment after successful login
     fun navigateToDashboard() {

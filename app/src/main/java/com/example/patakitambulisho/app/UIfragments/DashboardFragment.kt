@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.patakitambulisho.R
+import android.widget.ImageView
+
 
 class DashboardFragment : Fragment() {
 
@@ -21,7 +23,11 @@ class DashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // You can add any additional logic here if needed
-        // For example, handling button clicks or updating the text dynamically
+        val backIcon = view.findViewById<ImageView>(R.id.backIcon)
+        backIcon.setOnClickListener {
+
+            (activity as? MainActivity)?.goBackToLogin()
+        }
     }
+
 }

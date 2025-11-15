@@ -71,6 +71,7 @@ class OtpVerificationFragment : Fragment() {
         viewModel.verifyOtpResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Loading -> Toast.makeText(requireContext(), "Verifying OTP…", Toast.LENGTH_SHORT).show()
+
                 is Result.Success -> {
                     Toast.makeText(requireContext(), result.data.message, Toast.LENGTH_LONG).show()
 
@@ -80,15 +81,20 @@ class OtpVerificationFragment : Fragment() {
                     val changePasswordFragment = ChangePasswordFragment()
                     changePasswordFragment.arguments = bundle
 
-                    requireActivity().supportFragmentManager.beginTransaction()
+                    // Clear all previous fragments including OTP fragment
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    fragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+                    // Replace fragment without adding to back stack
+                    fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, changePasswordFragment)
-                        .addToBackStack(null)
                         .commit()
                 }
 
                 is Result.Error -> Toast.makeText(requireContext(), result.message, Toast.LENGTH_LONG).show()
             }
         }
+
 
         // Observe resend OTP
         viewModel.resendOtpResult.observe(viewLifecycleOwner) { result ->

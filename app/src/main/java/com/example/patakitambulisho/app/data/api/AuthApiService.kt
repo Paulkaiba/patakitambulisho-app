@@ -1,5 +1,6 @@
 package com.example.patakitambulisho.app.data.api
 
+
 import com.example.patakitambulisho.app.data.model.*
 import retrofit2.http.*
 
@@ -35,4 +36,10 @@ interface AuthApiService {
     suspend fun resendOtp(
         @Field("email") email: String
     ): OtpVerifyResponse
+
+    @POST("reset-password.php")
+    suspend fun resetPassword(
+        @Body request: ResetPasswordRequest
+    ): ChangePasswordResponse
+
 }
