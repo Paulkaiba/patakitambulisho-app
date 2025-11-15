@@ -77,6 +77,38 @@ class AuthRepository {
         }
     }
 
+    suspend fun registerUser(request: RegisterRequest): RegisterResponse {
+        return try {
+            val response = RetrofitClient.apiService.registerUser(request)
+            response
+        } catch (e: Exception) {
+            RegisterResponse(false, "Network error: ${e.localizedMessage}")
+        }
+    }
+
+    // VERIFY OTP (registration)
+    // VERIFY OTP (registration)
+    suspend fun verifyRegistrationOtp(email: String, otp: String): AuthResponse {
+        return try {
+            RetrofitClient.apiService.verifyRegistrationOtp(OtpRequest(email, otp))
+        } catch (e: Exception) {
+            AuthResponse(false, e.localizedMessage ?: "Network error")
+        }
+    }
+
+
+    // RESEND OTP (registration)
+    suspend fun resendRegistrationOtp(email: String): AuthResponse {
+        return try {
+            val response = RetrofitClient.apiService.resendRegistrationOtp(
+                ResendOtpRequest(email)
+            )
+
+            response
+        } catch (e: Exception) {
+            AuthResponse(false, "Network error: ${e.localizedMessage}")
+        }
+    }
 
 
 }

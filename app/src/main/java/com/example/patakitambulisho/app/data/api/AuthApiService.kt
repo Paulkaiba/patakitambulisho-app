@@ -3,6 +3,7 @@ package com.example.patakitambulisho.app.data.api
 
 import com.example.patakitambulisho.app.data.model.*
 import retrofit2.http.*
+import retrofit2.Response
 
 interface AuthApiService {
 
@@ -41,5 +42,19 @@ interface AuthApiService {
     suspend fun resetPassword(
         @Body request: ResetPasswordRequest
     ): ChangePasswordResponse
+
+    @POST("register.php")
+    suspend fun registerUser(@Body request: RegisterRequest): RegisterResponse
+
+    @POST("twofactor.php")
+    suspend fun verifyRegistrationOtp(
+        @Body request: OtpRequest
+    ): AuthResponse
+
+    @POST("resend-otp.php")
+    suspend fun resendRegistrationOtp(
+        @Body request: ResendOtpRequest
+    ): AuthResponse
+
 
 }

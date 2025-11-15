@@ -25,8 +25,8 @@ class LoginFragment : Fragment() {
     private lateinit var passwordField: TextInputEditText
     private lateinit var loginButton: MaterialButton
     private lateinit var progressBar: ProgressBar
-
     private lateinit var forgetpass: TextView
+    private lateinit var registerButton: MaterialButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,13 +34,13 @@ class LoginFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
 
-        // Initialize views
         usernameField = view.findViewById(R.id.usernameEditText)
         passwordField = view.findViewById(R.id.passwordEditText)
         loginButton = view.findViewById(R.id.loginButton)
         progressBar = view.findViewById(R.id.progressBarLogin)
         forgetpass = view.findViewById(R.id.forgotPasswordText)
-        // Setup ViewModel
+        registerButton = view.findViewById(R.id.registerButton) // Added for navigation
+
         val repository = AuthRepository()
         val factory = LoginViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory)[LoginViewModel::class.java]
@@ -56,36 +56,37 @@ class LoginFragment : Fragment() {
             Log.d("LOGIN_RESPONSE", "Response: $result")
             if (result.success) {
                 Toast.makeText(requireContext(), "✅ ${result.message}", Toast.LENGTH_LONG).show()
-
-                // ✅ Navigate to DashboardFragment
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, DashboardFragment())
-                    .addToBackStack(null)  // allows back navigation
+                    .addToBackStack(null)
                     .commit()
-
             } else {
                 Toast.makeText(requireContext(), "❌ ${result.message}", Toast.LENGTH_LONG).show()
             }
         }
 
-
-        // Login button click
         loginButton.setOnClickListener {
             val username = usernameField.text.toString().trim()
             val password = passwordField.text.toString().trim()
 
-            Log.d("LOGIN_INPUT", "Trying login with: $username / $password")
-
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(requireContext(), "Please enter both fields", Toast.LENGTH_SHORT).show()
             } else {
-                // Call ViewModel login
                 viewModel.login(username, password)
             }
         }
+
         forgetpass.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, ForgotPasswordFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        // Navigate to RegisterFragment
+        registerButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, RegisterFragment())
                 .addToBackStack(null)
                 .commit()
         }

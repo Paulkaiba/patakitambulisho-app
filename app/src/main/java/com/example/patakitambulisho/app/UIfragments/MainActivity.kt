@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ✅ Navigation functions (these are good)
+    // ✅ Navigation functions
     fun navigateToForgotPassword() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, ForgotPasswordFragment())
@@ -34,6 +34,14 @@ class MainActivity : AppCompatActivity() {
             .addToBackStack(null)
             .commit()
     }
+
+    fun navigateToRegister() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, RegisterFragment())
+            .addToBackStack(null)
+            .commit()
+    }
+
     fun goBackToLogin() {
         // Clear the entire back stack
         supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
@@ -44,8 +52,7 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-
-    // ✅ (Optional) Navigate to DashboardFragment after successful login
+    // ✅ Navigate to DashboardFragment after successful login
     fun navigateToDashboard() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, DashboardFragment())
